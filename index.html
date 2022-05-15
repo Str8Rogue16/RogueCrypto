@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="monetization" content="$ilp.gatehub.net/"WalletAddress"" />
+
+<head>
+    <title>RogueCrypto</title>
+    <link rel="stylesheet" href="RogueStyle.css">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Barcode+128+Text" rel="stylesheet">
+</head>
+
+<body>
+    
+
+    <div id='barcodeContainer' class='glowing-animation'>
+      <h1 id="barcode">
+        <span class = "animatedSpan ">$</span>
+        <a href = "blank"><span class = "animatedSpan">R</a></span>
+        <span class = "animatedSpan">O</span>
+        <span class = "animatedSpan">G</span>
+        <span class = "animatedSpan">U</span>
+        <span class = "animatedSpan">E</span>
+        <span class = "animatedSpan"> </span>
+        <span class = "animatedSpan">C</span>
+        <span class = "animatedSpan">R</span>
+        <a href="home.html"><span class = "animatedSpan">Y</a></span>
+        <span class = "animatedSpan">P</span>
+        <span class = "animatedSpan">T</span>
+        <span class = "animatedSpan">O</span>
+        <span class = "animatedSpan">$</span>
+        
+    
+        
+        
+      </h1>
+    </div>    
+    
+
+</body>
+
+<script>let barcodeSpans = $("#barcode").children();
+
+    function barcodeAnimation()
+    {
+      barcodeSpans.each(function(i)
+      {
+        let span = $(this);
+        setTimeout(function()
+        {
+          // highlight each individual span with 200ms between each
+          span.toggleClass('highlighted');
+          // span.fadeToggle("slow");
+        }, 200*i);});
+      
+      barcodeSpans.each(function(i)
+      {
+        let span = $(this);
+        setTimeout(function()
+        {
+          // remove the highlighting from each span with 20ms between each
+          span.toggleClass('highlighted');
+          
+        }, 20*i);});
+    }
+    
+    $(document).ready(function()
+    {
+      setInterval(barcodeAnimation, 4000);
+    });
+    </script>
+
+<script>
+    if (document.monetization) {
+      document.monetization.addEventListener('monetizationstart', event => {
+        // User has an open payment stream
+  
+        // Connect to backend to validate the session using the request id
+        const { paymentPointer, requestId } = event.detail
+        if (!isValidSession(paymentPointer, requestId)) {
+          console.error('Invalid requestId for monetization')
+          showAdvertising()
+        }
+      })
+  
+      document.monetization.addEventListener('monetizationprogress', event => {
+        // A payment has been received
+  
+        // Connect to backend to validate the payment
+        const {
+          paymentPointer,
+          requestId,
+          amount,
+          assetCode,
+          assetScale,
+          receipt
+        } = event.detail
+        if (
+          isValidPayment(paymentPointer, requestId, amount, assetCode, assetScale, receipt)
+        ) {
+          // Hide ads for a period based on amount received
+          suspendAdvertising(amount, assetCode, assetScale)
+        }
+      })
+      // Wait 30 seconds and then show ads if advertising is no longer suspended
+      setTimeout(maybeShowAdvertising, 30000)
+    } else {
+      showAdvertising()
+    }
+  </script>
+
+</html>
